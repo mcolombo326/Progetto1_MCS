@@ -10,8 +10,8 @@ from utils.timer import Timer
 TOLERANCES = [1e-4, 1e-6, 1e-8, 1e-10]
 
 if __name__ == "__main__":
-    A = load_sparse_matrix("data/spa1.mtx")
-    x_true, b = generate_rhs_and_solution(A)
+    A = load_sparse_matrix("data/spa2.mtx")
+    b, x_true = generate_rhs_and_solution(A)
 
     solvers = [
         ("Jacobi", JacobiSolver),
@@ -26,8 +26,8 @@ if __name__ == "__main__":
             solver = SolverClass(A, b, tol)
             try:
                 with Timer() as t:
-                    x_approx, iters = solver.solve()
+                    x_approx, iters, elapsed = solver.solve()
                 err = relative_error(x_approx, x_true)
-                print(f"[{name:20}] iter={iters:5d} | err={err:.2e} | time={t.interval:.4f}s")
+                print(f"[{name:20}] iter={iters:5d} | err={err:.2e} | time={elapsed:.4f}s")
             except ValueError as e:
                 print(f"[{name:20}] Non converge: {str(e)}")

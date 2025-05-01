@@ -1,15 +1,26 @@
 import numpy as np
-from .base import BaseSolver
+import time
+from solver.base import BaseSolver
 
 class GaussSeidelSolver(BaseSolver):
     def solve(self):
-        x = np.zeros_like(self.b)
+        x = np.zeros(self.n)
+
+        start_time = time.perf_counter()
+
         for k in range(self.max_iter):
-            x_old = x.copy()
             for i in range(self.n):
-                s1 = np.dot(self.A[i, :i], x[:i])
-                s2 = np.dot(self.A[i, i + 1:], x_old[i + 1:])
-                x[i] = (self.b[i] - s1 - s2) / self.A[i, i]
+                row = self.A.getrow(i).toarray().flatten()
+                sigma = np.dot(row[:i], x[:i]) + np.dot(row[i+1:], x[i+1:])
+                x[i] = (self.b[i] - sigma) / row[i]
+
+                # controllo NaN/inf
+                if np.isnan(x[i]) or np.isinf(x[i]):
+                    raise ValueError(f"Gauss-Seidel diverge alla iterazione {k}, valore non valido trovato.")
+
             if self._check_convergence(x):
-                return x, k + 1
-        raise ValueError("Gauss-Seidel method did not converge")
+                elapsed_time = time.perf_counter() - start_time
+                return x, k + 1, elapsed_time
+
+        elapsed_time = time.perf_counter() - start_time
+        raise ValueError(f"Gauss-Seidel: non converge dopo {self.max_iter} iterazioni.")
