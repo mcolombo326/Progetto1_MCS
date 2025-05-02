@@ -10,7 +10,9 @@ from utils.timer import Timer
 TOLERANCES = [1e-4, 1e-6, 1e-8, 1e-10]
 
 if __name__ == "__main__":
-    A = load_sparse_matrix("data/test_matrix.mtx")
+    #A = load_sparse_matrix("data/spa1.mtx")
+    #A = load_sparse_matrix("data/test_matrix.mtx")
+    A = load_sparse_matrix("data/test_submatrix_10x10.mtx")
     b, x_true = generate_rhs_and_solution(A)
 
     solvers = [
