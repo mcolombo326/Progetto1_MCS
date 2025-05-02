@@ -1,22 +1,38 @@
 import numpy as np
-from .base import BaseSolver
+import time
+from solver.base import BaseSolver
 
 class ConjugateGradientSolver(BaseSolver):
     def solve(self):
-        x = np.zeros_like(self.b)
+        x = np.zeros(self.n)
         r = self.b - self.A @ x
         p = r.copy()
-        rsold = np.dot(r, r)
+
+        start_time = time.perf_counter()
 
         for k in range(self.max_iter):
             Ap = self.A @ p
-            alpha = rsold / np.dot(p, Ap)
-            x = x + alpha * p
-            r = r - alpha * Ap
-            rsnew = np.dot(r, r)
-            if np.sqrt(rsnew) / np.linalg.norm(self.b) < self.tol:
-                return x, k + 1
-            p = r + (rsnew / rsold) * p
-            rsold = rsnew
+            num = np.dot(r, r)
+            den = np.dot(p, Ap)
 
-        raise ValueError("Conjugate Gradient did not converge")
+            if den == 0 or np.isnan(den) or np.isinf(den):
+                raise ValueError(f"Conjugate Gradient: divisione per zero o valore non valido alla iterazione {k}.")
+
+            alpha = num / den
+            x = x + alpha * p
+
+            if self._check_convergence(x):
+                elapsed_time = time.perf_counter() - start_time
+                return x, k + 1, elapsed_time
+
+            r_new = r - alpha * Ap
+
+            if np.any(np.isnan(x)) or np.any(np.isinf(x)):
+                raise ValueError(f"Conjugate Gradient diverge alla iterazione {k}, valore non valido trovato.")
+
+            beta = np.dot(r_new, r_new) / num
+            p = r_new + beta * p
+            r = r_new
+
+        elapsed_time = time.perf_counter() - start_time
+        raise ValueError(f"Conjugate Gradient: non converge dopo {self.max_iter} iterazioni.")
