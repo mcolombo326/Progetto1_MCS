@@ -1,25 +1,22 @@
-import numpy as np
-from solver.jacobi import JacobiSolver
+from matrix_utils.matrix_loader import load_sparse_matrix, generate_rhs_and_solution
+from matrix_utils.metrics import relative_error
+from matrix_utils.timer import Timer
+from solver.conjugate_gradient import ConjugateGradientSolver
 from solver.gauss_seidel import GaussSeidelSolver
 from solver.gradient import GradientSolver
-from solver.conjugate_gradient import ConjugateGradientSolver
-from utils.matrix_loader import load_sparse_matrix, generate_rhs_and_solution
-from utils.metrics import relative_error
-from utils.timer import Timer
+from solver.jacobi import JacobiSolver
 
 TOLERANCES = [1e-4, 1e-6, 1e-8, 1e-10]
 
 if __name__ == "__main__":
-    #A = load_sparse_matrix("data/spa1.mtx")
-    #A = load_sparse_matrix("data/test_matrix.mtx")
-    A = load_sparse_matrix("data/test_submatrix_10x10.mtx")
+    A = load_sparse_matrix("data/spa1.mtx")
     b, x_true = generate_rhs_and_solution(A)
 
     solvers = [
         ("Jacobi", JacobiSolver),
-        ("Gauss-Seidel", GaussSeidelSolver),
-        ("Gradient", GradientSolver),
-        ("Conjugate Gradient", ConjugateGradientSolver),
+        #("Gauss-Seidel", GaussSeidelSolver),
+        #("Gradient", GradientSolver),
+        #("Conjugate Gradient", ConjugateGradientSolver),
     ]
 
     for tol in TOLERANCES:
