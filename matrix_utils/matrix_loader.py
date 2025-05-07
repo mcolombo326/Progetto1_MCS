@@ -11,9 +11,9 @@ def load_matrix_dense(file_path):
     Restituisce:
         A : matrice dei coefficienti (numpy array denso)
     """
-    A_sparse = mmread(file_path)
-    A_dense = A_sparse.toarray()  # converte da sparse a denso
-    return A_dense
+    A_sparse = mmread(file_path)    # legge la matrice in formato sparse
+    A = A_sparse.toarray()          # converte in matriceda densa
+    return A
 
 def prepare_system(file_path):
     """
@@ -36,15 +36,3 @@ def prepare_system(file_path):
     b = A @ x_exact
 
     return A, b
-
-
-
-
-
-""""
-from scipy.io import mmread
-
-def load_matrix(file_path):
-    A = mmread(file_path).tocsr()
-    return A
-"""
