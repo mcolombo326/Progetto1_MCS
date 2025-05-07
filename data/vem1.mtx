@@ -1,4 +1,4 @@
-%%MatrixMarket matrix coordinate real symmetric
+%%MatrixMarket matrix coordinate real general
 101  59  -2.499999999999750200e-01
 59  60  -4.999999999999991673e-01
 60  60  2.999999999999900080e+00
