@@ -8,17 +8,7 @@ from method.jacobi import jacobi
 
 # Funzione per runnare un metodo iterativo e calcolare tempo, errore relativo e numero iterazioni
 def run_solver(solver_func, A, b, tol):
-    """
-    Esegue un metodo iterativo, calcola tempo, errore relativo e numero iterazioni.
 
-    Parametri:
-        solver_name : nome del metodo (stringa)
-        solver_func : funzione di risoluzione (Jacobi, Gauss-Seidel...)
-        A, b : matrice dei coefficienti e termine noto
-        tol : tolleranza
-
-    Stampa i risultati.
-    """
     start = time.time()
     x_sol, err_rel, num_iter = solver_func(A, b, tol=tol, max_iter=cfg.MAX_ITER)
     elapsed_time = time.time() - start
@@ -27,6 +17,7 @@ def run_solver(solver_func, A, b, tol):
 
 # Funzione per runnare tutti i metodi iterativi e restituire i risultati
 def run_all_methods(A, b, tol):
+
     metodi = ["Jacobi", "Gauss-Seidel", "Gradient", "Conj. Gradient"]
     funzioni = [jacobi, gauss_seidel, gradient, conjugate_gradient]
 
