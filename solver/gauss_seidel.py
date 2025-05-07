@@ -13,8 +13,8 @@ def gauss_seidel(A, b, x0=None, tol=1e-10, max_iter=1000):
             x[i] = (b[i] - somma1 - somma2) / A[i, i]
 
         # Calcolo del residuo
-        residuo = b - np.dot(A, x)
-        err_rel = np.linalg.norm(residuo) / np.linalg.norm(b)
+        r = b - np.dot(A, x)
+        err_rel = np.linalg.norm(r) / np.linalg.norm(b)
 
         # Criterio di arresto
         if np.linalg.norm(x - x_old, ord=np.inf) < tol:

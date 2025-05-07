@@ -10,8 +10,8 @@ def jacobi(A, b, x0=None, tol=1e-10, max_iter=1000):
         x_new = (b - np.dot(R, x)) / D
 
         #Calcolo del residuo
-        residuo = (b - np.dot(A, x_new))
-        err_rel = np.linalg.norm(residuo) / np.linalg.norm(b)
+        r = (b - np.dot(A, x_new))
+        err_rel = np.linalg.norm(r) / np.linalg.norm(b)
 
         # Controllo del criterio di arresto con la norma del residuo
         if np.linalg.norm(x_new - x, ord=np.inf) < tol:

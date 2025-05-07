@@ -4,6 +4,8 @@ import matrix_utils.config as cfg
 from matrix_utils.matrix_loader import prepare_system
 from solver.jacobi import jacobi
 from solver.gauss_seidel import gauss_seidel
+from solver.gradient import gradient
+from solver.conjugate_gradient import conjugate_gradient
 
 
 def main():
@@ -15,10 +17,10 @@ def main():
         print("\nMatrice:", path[4:])
 
         for tol in cfg.TOLERANCES:
-            print("Gauss-Seidel with tolerance:", tol)
+            print("Conjugate Gradient with tolerance:", tol)
             start = time.time()
             # chiama Jacobi
-            x_sol, err_rel, num_iter = gauss_seidel(A, b, tol=tol, max_iter=cfg.MAX_ITER)
+            x_sol, err_rel, num_iter = conjugate_gradient(A, b, tol=tol, max_iter=cfg.MAX_ITER)
             end = time.time()
             tempo = end - start
 
