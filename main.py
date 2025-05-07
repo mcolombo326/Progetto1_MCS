@@ -1,33 +1,28 @@
-import time
-
 import matrix_utils.config as cfg
 from matrix_utils.matrix_loader import prepare_system
-from solver.jacobi import jacobi
-from solver.gauss_seidel import gauss_seidel
-from solver.gradient import gradient
-from solver.conjugate_gradient import conjugate_gradient
+from method.conjugate_gradient import conjugate_gradient
+from method.gauss_seidel import gauss_seidel
+from method.gradient import gradient
+from method.jacobi import jacobi
+from matrix_utils.method_solver import run_solver
 
 
 def main():
-
     for path in cfg.MATRIX_PATH:
         # carica A e b dal file mtx
         A, b = prepare_system(path)
 
-        print("\nMatrice:", path[4:])
+        print(f"\n➡️  Matrice: {path[5:]}")
 
         for tol in cfg.TOLERANCES:
-            print("Conjugate Gradient with tolerance:", tol)
-            start = time.time()
-            # chiama Jacobi
-            x_sol, err_rel, num_iter = conjugate_gradient(A, b, tol=tol, max_iter=cfg.MAX_ITER)
-            end = time.time()
-            tempo = end - start
-
-            print("Errore Relativo:", err_rel)
-            print("Numero di iterazioni:", num_iter)
-            print("Tempo di calcolo (s):", tempo)
-            print("-" * 40)
+            # Jacobi
+            run_solver("Jacobi", jacobi, A, b, tol)
+            # Gauss-Seidel
+            run_solver("Gauss-Seidel", gauss_seidel, A, b, tol)
+            # Gradient
+            run_solver("Gradient", gradient, A, b, tol)
+            # Conjugate Gradient
+            run_solver("Conjugate Gradient", conjugate_gradient, A, b, tol)
 
 
 if __name__ == "__main__":
