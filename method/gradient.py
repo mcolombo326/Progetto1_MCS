@@ -17,7 +17,8 @@ def gradient(A, b, x0=None, tol=1e-10, max_iter=1000):
         err_rel = np.linalg.norm(r) / np.linalg.norm(b)
 
         # Criterio di arresto
-        if np.linalg.norm(x_new - x, ord=np.inf) < tol:
+        #if np.linalg.norm(x_new - x, ord=np.inf) < tol:
+        if err_rel < tol:
             return x_new, err_rel, k+1
 
         x = x_new
