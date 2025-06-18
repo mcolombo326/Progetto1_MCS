@@ -24,29 +24,62 @@ def plot_results():
         A, b = prepare_system(path)
         print(f"\n📊 Risultati grafici per matrice: {path[5:]}")
 
+        # Dizionari per raccogliere metriche per ogni metodo alle varie tolleranze
+        err_rel_per_method = {m: [] for m in ["Jacobi", "Gauss-Seidel", "Gradient", "Conj. Gradient"]}
+        iter_per_method = {m: [] for m in err_rel_per_method}
+        time_per_method = {m: [] for m in err_rel_per_method}
+
         for tol in cfg.TOLERANCES:
             metodi, risultati = run_all_methods(A, b, tol)
 
-            iterazioni = [r[3] for r in risultati]
-            tempi = [r[4] for r in risultati]
+            for m, r in zip(metodi, risultati):
+                err_rel_per_method[m].append(r[2])
+                iter_per_method[m].append(r[3])
+                time_per_method[m].append(r[4])
 
-            # 📊 Grafico iterazioni
-            plt.figure(figsize=(8, 5))
-            plt.bar(metodi, iterazioni, color='steelblue')
-            plt.title(f"Iterazioni per metodo (tol={tol}, {path[5:]})")
-            plt.ylabel("Iterazioni")
-            plt.grid(axis='y', linestyle='--', alpha=0.6)
-            plt.tight_layout()
-            plt.show()
+        # 📈 Grafico errore relativo vs tolleranza (scala log-log)
+        plt.figure(figsize=(8, 6))
+        for metodo in err_rel_per_method:
+            plt.plot(cfg.TOLERANCES, err_rel_per_method[metodo], marker='o', label=metodo)
+        plt.xscale('log')
+        plt.yscale('log')
+        plt.xlabel("Tolleranza richiesta")
+        plt.ylabel("Errore relativo ottenuto")
+        plt.minorticks_off()
+        plt.title(f"Errore Relativo vs Tolleranza per {path[5:]}")
+        plt.grid(True, which="major", linestyle='--', alpha=0.4)
+        plt.legend()
+        plt.tight_layout()
+        plt.show()
 
-            # 📉 Grafico tempi
-            plt.figure(figsize=(8, 5))
-            plt.bar(metodi, tempi, color='salmon')
-            plt.title(f"Tempo di calcolo per metodo (tol={tol}, {path[5:]})")
-            plt.ylabel("Tempo (s)")
-            plt.grid(axis='y', linestyle='--', alpha=0.6)
-            plt.tight_layout()
-            plt.show()
+        # 📈 Grafico iterazioni vs tolleranza
+        plt.figure(figsize=(8, 6))
+        for metodo in iter_per_method:
+            plt.plot(cfg.TOLERANCES, iter_per_method[metodo], marker='o', label=metodo)
+        plt.xscale('log')
+        plt.xlabel("Tolleranza richiesta")
+        plt.ylabel("Numero Iterazioni")
+        plt.minorticks_off()
+        plt.title(f"Iterazioni vs Tolleranza per {path[5:]}")
+        plt.grid(True, which="major", linestyle='--', alpha=0.4)
+        plt.legend()
+        plt.tight_layout()
+        plt.show()
+
+        # 📈 Grafico tempo di calcolo vs tolleranza
+        plt.figure(figsize=(8, 6))
+        for metodo in time_per_method:
+            plt.plot(cfg.TOLERANCES, time_per_method[metodo], marker='o', label=metodo)
+        plt.xscale('log')
+        plt.xlabel("Tolleranza richiesta")
+        plt.ylabel("Tempo di calcolo (s)")
+        plt.minorticks_off()
+        plt.title(f"Tempo di Calcolo vs Tolleranza per {path[5:]}")
+        plt.grid(True, which="major", linestyle='--', alpha=0.4)
+        plt.legend()
+        plt.tight_layout()
+        plt.show()
+
 
 
 # Funzione per stampare i risultati in tabella e graficamente
@@ -55,31 +88,62 @@ def print_and_plot_results():
         A, b = prepare_system(path)
         print(f"\n➡️  Matrice: {path[5:]}")
 
+        # Dizionari per raccogliere metriche per ogni metodo alle varie tolleranze
+        err_rel_per_method = {m: [] for m in ["Jacobi", "Gauss-Seidel", "Gradient", "Conj. Gradient"]}
+        iter_per_method = {m: [] for m in err_rel_per_method}
+        time_per_method = {m: [] for m in err_rel_per_method}
+
         for tol in cfg.TOLERANCES:
             metodi, risultati = run_all_methods(A, b, tol)
 
-            # Stampa tabella
+            # Stampa tabella per questa tolleranza
             headers = ["Metodo", "Tolleranza", "Errore Relativo", "Iterazioni", "Tempo (s)"]
             print(tabulate(risultati, headers=headers, tablefmt="pretty"))
 
-            # Estrai iterazioni e tempi
-            iterazioni = [r[3] for r in risultati]
-            tempi = [r[4] for r in risultati]
+            for m, r in zip(metodi, risultati):
+                err_rel_per_method[m].append(r[2])
+                iter_per_method[m].append(r[3])
+                time_per_method[m].append(r[4])
 
-            # Grafico iterazioni
-            plt.figure(figsize=(8, 5))
-            plt.bar(metodi, iterazioni, color='steelblue')
-            plt.title(f"Iterazioni (tol={tol}, {path[5:]})")
-            plt.ylabel("Iterazioni")
-            plt.grid(axis='y', linestyle='--', alpha=0.6)
-            plt.tight_layout()
-            plt.show()
+        # 📈 Grafico errore relativo vs tolleranza
+        plt.figure(figsize=(8, 6))
+        for metodo in err_rel_per_method:
+            plt.plot(cfg.TOLERANCES, err_rel_per_method[metodo], marker='o', label=metodo)
+        plt.xscale('log')
+        plt.yscale('log')
+        plt.xlabel("Tolleranza richiesta")
+        plt.ylabel("Errore relativo ottenuto")
+        plt.minorticks_off()
+        plt.title(f"Errore Relativo vs Tolleranza per {path[5:]}")
+        plt.grid(True, which="major", linestyle='--', alpha=0.4)
+        plt.legend()
+        plt.tight_layout()
+        plt.show()
 
-            # Grafico tempi
-            plt.figure(figsize=(8, 5))
-            plt.bar(metodi, tempi, color='salmon')
-            plt.title(f"Tempo (tol={tol}, {path[5:]})")
-            plt.ylabel("Tempo (s)")
-            plt.grid(axis='y', linestyle='--', alpha=0.6)
-            plt.tight_layout()
-            plt.show()
+        # 📈 Grafico iterazioni vs tolleranza
+        plt.figure(figsize=(8, 6))
+        for metodo in iter_per_method:
+            plt.plot(cfg.TOLERANCES, iter_per_method[metodo], marker='o', label=metodo)
+        plt.xscale('log')
+        plt.xlabel("Tolleranza richiesta")
+        plt.ylabel("Numero Iterazioni")
+        plt.minorticks_off()
+        plt.title(f"Iterazioni vs Tolleranza per {path[5:]}")
+        plt.grid(True, which="major", linestyle='--', alpha=0.4)
+        plt.legend()
+        plt.tight_layout()
+        plt.show()
+
+        # 📈 Grafico tempo di calcolo vs tolleranza
+        plt.figure(figsize=(8, 6))
+        for metodo in time_per_method:
+            plt.plot(cfg.TOLERANCES, time_per_method[metodo], marker='o', label=metodo)
+        plt.xscale('log')
+        plt.xlabel("Tolleranza richiesta")
+        plt.ylabel("Tempo di calcolo (s)")
+        plt.minorticks_off()
+        plt.title(f"Tempo di Calcolo vs Tolleranza per {path[5:]}")
+        plt.grid(True, which="major", linestyle='--', alpha=0.4)
+        plt.legend()
+        plt.tight_layout()
+        plt.show()
