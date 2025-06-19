@@ -1,102 +1,64 @@
 import os
+import shutil
 
 import matplotlib.pyplot as plt
 import pandas as pd
-from tabulate import tabulate
 
 import utils.config as cfg
 from utils.matrix_loader import prepare_system
-from utils.method_solver import run_all_methods
+from utils.result_printer import (
+    collect_results,
+    plot_error_rel_vs_tol,
+    plot_iter_vs_tol,
+    plot_time_vs_tol
+)
 
-# Funzione per esportare tabelle e grafici nella cartella "risultati_report"
+
+# Funzione per svuotare la cartella di output
+def clear_output_folder(folder):
+    if os.path.exists(folder):
+        shutil.rmtree(folder)
+    os.makedirs(folder)
+
+# Funzione per esportare risultati e grafici
+
 def export_results(output_folder="risultati_report"):
-    os.makedirs(output_folder, exist_ok=True)
+    clear_output_folder(output_folder)
 
     for path in cfg.MATRIX_PATH:
         A, b = prepare_system(path)
         matrice_nome = path[5:]
 
-        for tol in cfg.TOLERANCES:
-            metodi, risultati = run_all_methods(A, b, tol)
+        err_rel, iterazioni, tempi = collect_results(A, b)
 
-            # Salva CSV
-            df = pd.DataFrame(risultati, columns=["Metodo", "Tolleranza", "Errore Relativo", "Iterazioni", "Tempo (s)"])
+        # Salva tabelle CSV per ogni tolleranza
+        for i, tol in enumerate(cfg.TOLERANCES):
+            dati = []
+            for metodo in err_rel:
+                dati.append([
+                    metodo, tol, err_rel[metodo][i], iterazioni[metodo][i], tempi[metodo][i]
+                ])
+
+            df = pd.DataFrame(dati, columns=["Metodo", "Tolleranza", "Errore Relativo", "Iterazioni", "Tempo (s)"])
             csv_name = f"{output_folder}/{matrice_nome}_tol{tol}_risultati.csv"
             df.to_csv(csv_name, index=False)
 
-            # Estrai iterazioni e tempi per i grafici
-            iterazioni = [r[3] for r in risultati]
-            tempi = [r[4] for r in risultati]
+        # Esporta grafici già pronti con funzioni di result_printer
+        # Salvando invece di mostrare
 
-            #Grafico iterazioni
-            plt.figure(figsize=(8, 5))
-            plt.bar(metodi, iterazioni, color='steelblue')
-            plt.title(f"Iterazioni (tol={tol}, {matrice_nome})")
-            plt.ylabel("Iterazioni")
-            plt.grid(axis='y', linestyle='--', alpha=0.6)
-            plt.tight_layout()
-            iter_plot_name = f"{output_folder}/{matrice_nome}_tol{tol}_iterazioni.png"
-            plt.savefig(iter_plot_name)
-            plt.close()
+        plt.figure()
+        plot_error_rel_vs_tol(err_rel, path)
+        plt.savefig(f"{output_folder}/{matrice_nome}_errori.png")
+        plt.close()
 
-            #Grafico tempi
-            plt.figure(figsize=(8, 5))
-            plt.bar(metodi, tempi, color='salmon')
-            plt.title(f"Tempo di calcolo (tol={tol}, {matrice_nome})")
-            plt.ylabel("Tempo (s)")
-            plt.grid(axis='y', linestyle='--', alpha=0.6)
-            plt.tight_layout()
-            time_plot_name = f"{output_folder}/{matrice_nome}_tol{tol}_tempi.png"
-            plt.savefig(time_plot_name)
-            plt.close()
+        plt.figure()
+        plot_iter_vs_tol(iterazioni, path)
+        plt.savefig(f"{output_folder}/{matrice_nome}_iterazioni.png")
+        plt.close()
 
-    print(f"\nTutti i risultati e grafici salvati in: {output_folder}")
+        plt.figure()
+        plot_time_vs_tol(tempi, path)
+        plt.savefig(f"{output_folder}/{matrice_nome}_tempi.png")
+        plt.close()
 
-# Funzione per esportare tabelle e grafici nella cartella "risultati_report" e stampare a console
-def export_and_print_results(output_folder="risultati_report"):
-    os.makedirs(output_folder, exist_ok=True)
-
-    for path in cfg.MATRIX_PATH:
-        A, b = prepare_system(path)
-        matrice_nome = path[5:]
-
-        for tol in cfg.TOLERANCES:
-            metodi, risultati = run_all_methods(A, b, tol)
-
-            #Stampa tabella a console
-            print(f"\nMatrice: {matrice_nome}, Tolleranza: {tol}")
-            headers = ["Metodo", "Tolleranza", "Errore Relativo", "Iterazioni", "Tempo (s)"]
-            print(tabulate(risultati, headers=headers, tablefmt="pretty"))
-
-            #Salva CSV
-            df = pd.DataFrame(risultati, columns=headers)
-            csv_name = f"{output_folder}/{matrice_nome}_tol{tol}_risultati.csv"
-            df.to_csv(csv_name, index=False)
-
-            #Estrai iterazioni e tempi
-            iterazioni = [r[3] for r in risultati]
-            tempi = [r[4] for r in risultati]
-
-            #Grafico iterazioni
-            plt.figure(figsize=(8, 5))
-            plt.bar(metodi, iterazioni, color='steelblue')
-            plt.title(f"Iterazioni (tol={tol}, {matrice_nome})")
-            plt.ylabel("Iterazioni")
-            plt.grid(axis='y', linestyle='--', alpha=0.6)
-            plt.tight_layout()
-            iter_plot_name = f"{output_folder}/{matrice_nome}_tol{tol}_iterazioni.png"
-            plt.savefig(iter_plot_name)
-            plt.close()
-
-            #Grafico tempi
-            plt.figure(figsize=(8, 5))
-            plt.bar(metodi, tempi, color='salmon')
-            plt.title(f"Tempo di calcolo (tol={tol}, {matrice_nome})")
-            plt.ylabel("Tempo (s)")
-            plt.grid(axis='y', linestyle='--', alpha=0.6)
-            plt.tight_layout()
-            time_plot_name = f"{output_folder}/{matrice_nome}_tol{tol}_tempi.png"
-            plt.savefig(time_plot_name)
-            plt.close()
-
-    print(f"\nTutti i risultati, grafici e tabelle stampate salvati in: {output_folder}")
+    print(f"\nTutti i risultati e grafici esportati in: {output_folder}")

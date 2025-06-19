@@ -1,7 +1,7 @@
 import numpy as np
 
 def conjugate_gradient(A, b, x0=None, tol=1e-10, max_iter=1000):
-    n = len(b)
+
     x = np.zeros_like(b) if x0 is None else x0.copy()
 
     r = b - np.dot(A, x)
@@ -18,7 +18,6 @@ def conjugate_gradient(A, b, x0=None, tol=1e-10, max_iter=1000):
         err_rel = np.linalg.norm(r_new) / np.linalg.norm(b)
 
         # Criterio di arresto
-        #if np.linalg.norm(x_new - x, ord=np.inf) < tol:
         if err_rel < tol:
             return x_new, err_rel, k+1
 
