@@ -47,17 +47,17 @@ def export_results(output_folder="risultati_report"):
         # Esporta grafici già pronti con funzioni di result_printer
         # Salvando invece di mostrare
 
-        plt.figure()
+
         plot_error_rel_vs_tol(err_rel, path)
         plt.savefig(f"{output_folder}/{matrice_nome}_errori.png")
         plt.close()
 
-        plt.figure()
+
         plot_iter_vs_tol(iterazioni, path)
         plt.savefig(f"{output_folder}/{matrice_nome}_iterazioni.png")
         plt.close()
 
-        plt.figure()
+
         plot_time_vs_tol(tempi, path)
         plt.savefig(f"{output_folder}/{matrice_nome}_tempi.png")
         plt.close()
