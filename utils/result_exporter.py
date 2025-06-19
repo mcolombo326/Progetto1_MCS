@@ -28,38 +28,37 @@ def export_results(output_folder="risultati_report"):
     for path in cfg.MATRIX_PATH:
         A, b = prepare_system(path)
         matrice_nome = path[5:]
-        print(f"\nMatrice: {path[5:]}")
+        print(f"\nMatrice: {matrice_nome}")
 
         err_rel, iterazioni, tempi = collect_results(A, b)
 
-        # Salva tabelle CSV per ogni tolleranza
+        dati_totali = []  # raccolta di tutte le righe
+
         for i, tol in enumerate(cfg.TOLERANCES):
-            dati = []
             for metodo in err_rel:
-                dati.append([
-                    metodo, tol, err_rel[metodo][i], iterazioni[metodo][i], tempi[metodo][i]
+                tol_str = "{:.0e}".format(cfg.TOLERANCES[i])
+                dati_totali.append([
+                    metodo, tol_str, err_rel[metodo][i], iterazioni[metodo][i], tempi[metodo][i]
                 ])
 
-            df = pd.DataFrame(dati, columns=["Metodo", "Tolleranza", "Errore Relativo", "Iterazioni", "Tempo (s)"])
-            csv_name = f"{output_folder}/{matrice_nome}_tol{tol}_risultati.csv"
-            df.to_csv(csv_name, index=False)
+        df = pd.DataFrame(dati_totali, columns=["Metodo", "Tolleranza", "Errore Relativo", "Iterazioni", "Tempo (s)"])
+        csv_name = f"{output_folder}/{matrice_nome}_risultati_completi.csv"
+        df.to_csv(csv_name, index=False)
 
-        # Esporta grafici già pronti con funzioni di result_printer
-        # Salvando invece di mostrare
-
-        fig_err_rel = plot_error_rel_vs_tol(err_rel, path)
-        fig_err_rel.show() # mostra il grafico a schermo
-        fig_err_rel.savefig(f"{output_folder}/{matrice_nome}_errori.png")
-        plt.close(fig_err_rel)
+        # Grafici come prima (assumendo che plot_... ritornino figure)
+        fig = plot_error_rel_vs_tol(err_rel, path)
+        fig.savefig(f"{output_folder}/{matrice_nome}_errori.png")
+        fig.show()
+        plt.close(fig)
 
         fig_iter = plot_iter_vs_tol(iterazioni, path)
-        fig_iter.show()  # mostra il grafico a schermo
         fig_iter.savefig(f"{output_folder}/{matrice_nome}_iterazioni.png")
-        plt.close(fig_iter)  # chiude la figura per liberare memoria
+        fig_iter.show()
+        plt.close(fig_iter)
 
         fig_time = plot_time_vs_tol(tempi, path)
-        fig_time.show()
         fig_time.savefig(f"{output_folder}/{matrice_nome}_tempi.png")
+        fig_time.show()
         plt.close(fig_time)
 
     print(f"\nTutti i risultati e grafici esportati in: {output_folder}")

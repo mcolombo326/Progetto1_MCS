@@ -16,7 +16,18 @@ def collect_results(A, b):
 
         # Stampa tabella per questa tolleranza
         headers = ["Metodo", "Tolleranza", "Errore Relativo", "Iterazioni", "Tempo (s)"]
-        print(tabulate(risultati, headers=headers, tablefmt="pretty"))
+
+        # Formatta tol in notazione scientifica come stringa
+        tol_str = "{:.0e}".format(tol)
+
+        # Sovrascrivi la colonna Tolleranza dei risultati stampati a schermo
+        risultati_formattati = []
+        for r in risultati:
+            r_formattato = list(r)  # copia
+            r_formattato[1] = tol_str
+            risultati_formattati.append(r_formattato)
+
+        print(tabulate(risultati_formattati, headers=headers, tablefmt="pretty"))
 
         for m, r in zip(metodi, risultati):
             err_rel_per_method[m].append(r[2])
