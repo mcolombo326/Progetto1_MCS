@@ -18,9 +18,14 @@ def plot_results():
 
         err_rel, iterazioni, tempi = collect_results(A, b)
 
-        plot_error_rel_vs_tol(err_rel, path)
-        plot_iter_vs_tol(iterazioni, path)
-        plot_time_vs_tol(tempi, path)
+        fig1 = plot_error_rel_vs_tol(err_rel, path)
+        fig1.show()
+
+        fig2 = plot_iter_vs_tol(iterazioni, path)
+        fig2.show()
+
+        fig3 = plot_time_vs_tol(tempi, path)
+        fig3.show()
 
 
 # Funzione per stampare TABELLE + GRAFICI insieme
@@ -31,7 +36,12 @@ def print_and_plot_results():
 
         err_rel, iterazioni, tempi = collect_results(A, b)
 
-        plot_error_rel_vs_tol(err_rel, path)
-        plot_iter_vs_tol(iterazioni, path)
-        plot_time_vs_tol(tempi, path)
+        fig1 = plot_error_rel_vs_tol(err_rel, path)
+        fig1.show()
+
+        fig2 = plot_iter_vs_tol(iterazioni, path)
+        fig2.show()
+
+        fig3 = plot_time_vs_tol(tempi, path)
+        fig3.show()
 

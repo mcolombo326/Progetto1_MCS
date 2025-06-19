@@ -30,47 +30,49 @@ def plot_error_rel_vs_tol(err_rel_per_method, path):
     tolleranze = np.arange(len(cfg.TOLERANCES))
     bar_width = 0.2
 
-    plt.figure(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(10, 6))
     for idx, metodo in enumerate(err_rel_per_method):
         valori = err_rel_per_method[metodo]
         posizioni = tolleranze + idx * bar_width
-        plt.bar(posizioni, valori, width=bar_width, label=metodo)
+        ax.bar(posizioni, valori, width=bar_width, label=metodo)
 
-    plt.yscale('log')
-    plt.xlabel("Tolleranza (indice)")
-    plt.ylabel("Errore Relativo")
-    plt.minorticks_off()
-    plt.title(f"Errore Relativo per Tolleranza — {path[5:]}")
-    plt.xticks(tolleranze + bar_width * 1.5, [f"{t:.0e}" for t in cfg.TOLERANCES])
-    plt.grid(True, which="major", linestyle='--', alpha=0.4)
-    plt.legend()
-    plt.tight_layout()
-    plt.show()
+    ax.set_yscale('log')
+    ax.set_xlabel("Tolleranza (indice)")
+    ax.set_ylabel("Errore Relativo")
+    ax.minorticks_off()
+    ax.set_title(f"Errore Relativo per Tolleranza — {path[5:]}")
+    ax.set_xticks(tolleranze + bar_width * 1.5)
+    ax.set_xticklabels([f"{t:.0e}" for t in cfg.TOLERANCES])
+    ax.grid(True, which="major", linestyle='--', alpha=0.4)
+    ax.legend()
+    fig.tight_layout()
+    return fig
+
 
 def plot_iter_vs_tol(iter_per_method, path):
-    plt.figure(figsize=(8, 6))
+    fig, ax = plt.subplots(figsize=(8, 6))
     for metodo in iter_per_method:
-        plt.plot(cfg.TOLERANCES, iter_per_method[metodo], marker='o', label=metodo)
-    plt.xscale('log')
-    plt.xlabel("Tolleranza")
-    plt.ylabel("Iterazioni")
-    plt.minorticks_off()
-    plt.title(f"Iterazioni vs Tolleranza — {path[5:]}")
-    plt.grid(True, which="major", linestyle='--', alpha=0.4)
-    plt.legend()
-    plt.tight_layout()
-    plt.show()
+        ax.plot(cfg.TOLERANCES, iter_per_method[metodo], marker='o', label=metodo)
+    ax.set_xscale('log')
+    ax.set_xlabel("Tolleranza")
+    ax.set_ylabel("Iterazioni")
+    ax.minorticks_off()
+    ax.set_title(f"Iterazioni vs Tolleranza — {path[5:]}")
+    ax.grid(True, which="major", linestyle='--', alpha=0.4)
+    ax.legend()
+    fig.tight_layout()
+    return fig
 
 def plot_time_vs_tol(time_per_method, path):
-    plt.figure(figsize=(8, 6))
+    fig, ax = plt.subplots(figsize=(8, 6))
     for metodo in time_per_method:
-        plt.plot(cfg.TOLERANCES, time_per_method[metodo], marker='o', label=metodo)
-    plt.xscale('log')
-    plt.xlabel("Tolleranza")
-    plt.ylabel("Tempo (s)")
-    plt.minorticks_off()
-    plt.title(f"Tempo di Calcolo vs Tolleranza — {path[5:]}")
-    plt.grid(True, which="major", linestyle='--', alpha=0.4)
-    plt.legend()
-    plt.tight_layout()
-    plt.show()
+        ax.plot(cfg.TOLERANCES, time_per_method[metodo], marker='o', label=metodo)
+    ax.set_xscale('log')
+    ax.set_xlabel("Tolleranza")
+    ax.set_ylabel("Tempo (s)")
+    ax.minorticks_off()
+    ax.set_title(f"Tempo di Calcolo vs Tolleranza — {path[5:]}")
+    ax.grid(True, which="major", linestyle='--', alpha=0.4)
+    ax.legend()
+    fig.tight_layout()
+    return fig

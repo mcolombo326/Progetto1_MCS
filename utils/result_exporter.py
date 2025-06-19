@@ -47,19 +47,19 @@ def export_results(output_folder="risultati_report"):
         # Esporta grafici già pronti con funzioni di result_printer
         # Salvando invece di mostrare
 
+        fig_err_rel = plot_error_rel_vs_tol(err_rel, path)
+        fig_err_rel.show() # mostra il grafico a schermo
+        fig_err_rel.savefig(f"{output_folder}/{matrice_nome}_errori.png")
+        plt.close(fig_err_rel)
 
-        plot_error_rel_vs_tol(err_rel, path)
-        plt.savefig(f"{output_folder}/{matrice_nome}_errori.png")
-        plt.close()
+        fig_iter = plot_iter_vs_tol(iterazioni, path)
+        fig_iter.show()  # mostra il grafico a schermo
+        fig_iter.savefig(f"{output_folder}/{matrice_nome}_iterazioni.png")
+        plt.close(fig_iter)  # chiude la figura per liberare memoria
 
-
-        plot_iter_vs_tol(iterazioni, path)
-        plt.savefig(f"{output_folder}/{matrice_nome}_iterazioni.png")
-        plt.close()
-
-
-        plot_time_vs_tol(tempi, path)
-        plt.savefig(f"{output_folder}/{matrice_nome}_tempi.png")
-        plt.close()
+        fig_time = plot_time_vs_tol(tempi, path)
+        fig_time.show()
+        fig_time.savefig(f"{output_folder}/{matrice_nome}_tempi.png")
+        plt.close(fig_time)
 
     print(f"\nTutti i risultati e grafici esportati in: {output_folder}")
