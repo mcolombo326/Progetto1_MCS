@@ -28,6 +28,7 @@ def export_results(output_folder="risultati_report"):
     for path in cfg.MATRIX_PATH:
         A, b = prepare_system(path)
         matrice_nome = path[5:]
+        print(f"\nMatrice: {path[5:]}")
 
         err_rel, iterazioni, tempi = collect_results(A, b)
 
