@@ -23,8 +23,10 @@ def collect_results(A, b):
         # Sovrascrivi la colonna Tolleranza dei risultati stampati a schermo
         risultati_formattati = []
         for r in risultati:
-            r_formattato = list(r)  # copia
-            r_formattato[1] = tol_str
+            r_formattato = list(r)
+            r_formattato[1] = format_scientific(tol, 0)  # Tolleranza
+            r_formattato[2] = format_scientific(r[2])  # Errore relativo
+            r_formattato[4] = format_scientific(r[4])  # Tempo
             risultati_formattati.append(r_formattato)
 
         print(tabulate(risultati_formattati, headers=headers, tablefmt="pretty"))
@@ -87,3 +89,6 @@ def plot_time_vs_tol(time_per_method, path):
     ax.legend()
     fig.tight_layout()
     return fig
+
+def format_scientific(val, decimals=3):
+    return f"{val:.{decimals}e}"

@@ -6,6 +6,7 @@ import pandas as pd
 
 import utils.config as cfg
 from utils.matrix_loader import prepare_system
+from utils.result_plotter import format_scientific
 from utils.result_printer import (
     collect_results,
     plot_error_rel_vs_tol,
@@ -36,9 +37,11 @@ def export_results(output_folder="risultati_report"):
 
         for i, tol in enumerate(cfg.TOLERANCES):
             for metodo in err_rel:
-                tol_str = "{:.0e}".format(cfg.TOLERANCES[i])
+                tol_str = format_scientific(cfg.TOLERANCES[i], 0)
                 dati_totali.append([
-                    metodo, tol_str, err_rel[metodo][i], iterazioni[metodo][i], tempi[metodo][i]
+                    metodo, tol_str, format_scientific(err_rel[metodo][i]),
+                    iterazioni[metodo][i],
+                    format_scientific(tempi[metodo][i])
                 ])
 
         df = pd.DataFrame(dati_totali, columns=["Metodo", "Tolleranza", "Errore Relativo", "Iterazioni", "Tempo (s)"])
