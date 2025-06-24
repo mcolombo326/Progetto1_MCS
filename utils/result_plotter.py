@@ -63,32 +63,44 @@ def plot_error_rel_vs_tol(err_rel_per_method, path):
 
 
 def plot_iter_vs_tol(iter_per_method, path):
+    tolleranze = np.arange(len(cfg.TOLERANCES))
     fig, ax = plt.subplots(figsize=(8, 6))
+
     for metodo in iter_per_method:
-        ax.plot(cfg.TOLERANCES, iter_per_method[metodo], marker='o', label=metodo)
-    ax.set_xscale('log')
-    ax.set_xlabel("Tolleranza")
+        valori = iter_per_method[metodo]
+        ax.plot(tolleranze, valori, marker='o', label=metodo)
+
+    ax.set_xlabel("Tolleranza (indice)")
     ax.set_ylabel("Iterazioni")
-    ax.minorticks_off()
     ax.set_title(f"Iterazioni vs Tolleranza — {path[5:]}")
+    ax.set_xticks(tolleranze)
+    ax.set_xticklabels([f"{t:.0e}" for t in cfg.TOLERANCES])
     ax.grid(True, which="major", linestyle='--', alpha=0.4)
+    ax.minorticks_off()
     ax.legend()
     fig.tight_layout()
     return fig
 
+
 def plot_time_vs_tol(time_per_method, path):
+    tolleranze = np.arange(len(cfg.TOLERANCES))
     fig, ax = plt.subplots(figsize=(8, 6))
+
     for metodo in time_per_method:
-        ax.plot(cfg.TOLERANCES, time_per_method[metodo], marker='o', label=metodo)
-    ax.set_xscale('log')
-    ax.set_xlabel("Tolleranza")
+        valori = time_per_method[metodo]
+        ax.plot(tolleranze, valori, marker='o', label=metodo)
+
+    ax.set_xlabel("Tolleranza (indice)")
     ax.set_ylabel("Tempo (s)")
-    ax.minorticks_off()
     ax.set_title(f"Tempo di Calcolo vs Tolleranza — {path[5:]}")
+    ax.set_xticks(tolleranze)
+    ax.set_xticklabels([f"{t:.0e}" for t in cfg.TOLERANCES])
     ax.grid(True, which="major", linestyle='--', alpha=0.4)
+    ax.minorticks_off()
     ax.legend()
     fig.tight_layout()
     return fig
+
 
 def format_scientific(val, decimals=3):
     return f"{val:.{decimals}e}"
