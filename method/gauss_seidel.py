@@ -1,19 +1,23 @@
 import numpy as np
 
 def gauss_seidel(A, b, x0=None, tol=1e-10, max_iter=1000):
-    n = len(b)
+    n = len(b) # Dimensione del vettore b
     x = np.zeros_like(b) if x0 is None else x0.copy()
 
     for k in range(max_iter):
+        # Salvataggio del vettore x precedente per il calcolo del residuo
         x_old = x.copy()
 
         for i in range(n):
-            somma1 = np.dot(A[i, :i], x[:i])            # usa x aggiornato (k+1)
-            somma2 = np.dot(A[i, i+1:], x_old[i+1:])    # usa x_old (k)
+            # Aggiornamento sequenziale di ogni x[i] usando subito i valori nuovi (Gauss-Seidel)
+            somma1 = np.dot(A[i, :i], x[:i]) # usa x aggiornato (k+1)
+            somma2 = np.dot(A[i, i+1:], x_old[i+1:]) # usa x_old (k)
             x[i] = (b[i] - somma1 - somma2) / A[i, i]
 
         # Calcolo del residuo
         r = b - np.dot(A, x)
+
+        # Calcolo dell'errore relativo
         err_rel = np.linalg.norm(r) / np.linalg.norm(b)
 
         # Criterio di arresto
